@@ -1,69 +1,55 @@
-//Using refs we read the value when needed.
-//We only read the value once when the form is submitted.
-import { useEffect, useRef, useState } from 'react';
+//This is the simplified version of SimpleInputComplex
+import { useState } from 'react';
 
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState('');
-  const [isValid, setIsValid] = useState(false);
-  const [enteredNameTouched, setEnteredNameTouched] = useState(false); //this state is when user touch the input field
-  // const [isValid, setIsValid] = useState(true);
-  // Here setting the above state as "true" might create an error when we have an useEffect working specially with true value.
-  // this will make useEffect run even before the user input any value. 
+  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
-  useEffect(() => {
-    if(isValid){
-      console.log("Input is valid");
-    }
-  }, [isValid]);
+  const enteredNameIsValid = enteredName.trim() !== '';
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
   };
 
-  const nameInputBlurHandler = (event) => {
-    setEnteredNameTouched (true);
-
-    if (enteredName.trim() == ''){
-      setIsValid(false);
-      return;
-    }
-  }
+  const nameInputBlurHandler = event => {
+    setEnteredNameTouched(true);
+  };
 
   const formSubmissionHandler = (event) => {
     event.preventDefault();
+
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() == ''){
-      setIsValid(false);
+    if (!enteredNameIsValid) {
       return;
     }
-    setIsValid (true);
-    console.log("Name....", enteredName);
 
-    const enteredValue = nameInputRef.current.value; //refs are obj that has current property that holds the value.
-    console.log("Value...",enteredValue);
+    console.log(enteredName);
 
-    // nameInputRef.current.value = ''; => To reset ref, it is NOT IDEAL, DON'T MANIPULATE THE DOM
+    // nameInputRef.current.value = ''; => NOT IDEAL, DON'T MANIPULATE THE DOM
     setEnteredName('');
+    setEnteredNameTouched(false);
   };
 
-  const nameInputIsInvalid = !isValid && enteredNameTouched;
-  const nameInputClasses = nameInputIsInvalid? 'form-control invalid' : 'form-control';
+  const nameInputClasses = nameInputIsInvalid
+    ? 'form-control invalid'
+    : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
       <div className={nameInputClasses}>
         <label htmlFor='name'>Your Name</label>
         <input
-          ref={nameInputRef}
           type='text'
           id='name'
           onChange={nameInputChangeHandler}
-          onBlur= {nameInputBlurHandler} //Built-in event which fires whenever i/p looses focus
+          onBlur={nameInputBlurHandler} //Built-in event which fires whenever i/p looses focus
           value={enteredName}
         />
-        {nameInputIsInvalid && <p className='error-text'>Name shouldnot be empty</p>}
+        {nameInputIsInvalid && (
+          <p className='error-text'>Name must not be empty.</p>
+        )}
       </div>
       <div className='form-actions'>
         <button>Submit</button>
