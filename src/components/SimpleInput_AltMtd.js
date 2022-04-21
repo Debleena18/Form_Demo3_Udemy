@@ -1,9 +1,9 @@
-//Using refs we read the value when needed.
-//We only read the value once when the form is submitted.
-import { useRef, useState } from 'react';
+//This is an alternative file for SimpleInput that uses only the state change.
+//This every keystrock login with state.
+//This also works fine.
+import { useState } from 'react';
 
-const SimpleInput = (props) => {
-  const nameInputRef = useRef();
+const SimpleInputAlt = (props) => {
   const [enteredName, setEnteredName] = useState('');
 
   const nameInputChangeHandler = (event) => {
@@ -13,13 +13,8 @@ const SimpleInput = (props) => {
   const formSubmissionHandler = (event) => {
     event.preventDefault();
 
-    console.log("Name....", enteredName);
-
-    const enteredValue = nameInputRef.current.value; //refs are obj that has current property that holds the value.
-    console.log("Value...",enteredValue);
-
-    // nameInputRef.current.value = ''; => To reset ref, it is NOT IDEAL, DON'T MANIPULATE THE DOM
-    setEnteredName('');
+     console.log("Alt_Name...", enteredName);
+     setEnteredName('');
   };
 
   return (
@@ -27,7 +22,6 @@ const SimpleInput = (props) => {
       <div className='form-control'>
         <label htmlFor='name'>Your Name</label>
         <input
-          ref={nameInputRef}
           type='text'
           id='name'
           onChange={nameInputChangeHandler}
@@ -41,4 +35,4 @@ const SimpleInput = (props) => {
   );
 };
 
-export default SimpleInput;
+export default SimpleInputAlt;
